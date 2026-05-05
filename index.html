@@ -807,7 +807,7 @@
       addMessage(reply, 'bot');
     } catch (err) {
       removeTyping();
-      if (N8N_WEBHOOK_URL === 'DEINE_N8N_WEBHOOK_URL_HIER_EINTRAGEN') {
+      if (N8N_WEBHOOK_URL === 'https://n8n.srv1268258.hstgr.cloud/webhook/4f929fca-a1b0-4083-b0d3-5205e0e241b3/chat') {
         addError('Bitte trage die Webhook-URL aus deinem n8n-Workflow ein. Öffne dazu den aktivierten Workflow in n8n und kopiere die URL aus dem Chat-Trigger-Node.');
       } else {
         addError('Verbindungsfehler: ' + err.message);
