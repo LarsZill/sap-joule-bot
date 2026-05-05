@@ -787,15 +787,22 @@
 
       const data = await res.json();
 
-      // n8n gibt die Antwort in verschiedenen Feldern zurück
-      const reply =
-        data?.output ||
-        data?.text ||
-        data?.message ||
-        data?.response ||
-        (Array.isArray(data) && data[0]?.output) ||
-        (Array.isArray(data) && data[0]?.text) ||
-        'Entschuldigung, ich konnte keine Antwort generieren.';
+      // n8n Antwort-Extraktion — unterstützt alle Anthropic-Formate
+      let reply = '';
+      if (data?.antwort_text) {
+        reply = data.antwort_text;
+      } else if (Array.isArray(data) && data[0]?.antwort_text) {
+        reply = data[0].antwort_text;
+      } else if (data?.content && Array.isArray(data.content)) {
+        reply = data.content.filter(b => b.type === 'text').map(b => b.text).join('');
+      } else if (Array.isArray(data) && data[0]?.content && Array.isArray(data[0].content)) {
+        reply = data[0].content.filter(b => b.type === 'text').map(b => b.text).join('');
+      } else {
+        reply = data?.output || data?.text || data?.message || data?.response ||
+          (Array.isArray(data) && data[0]?.output) ||
+          (Array.isArray(data) && data[0]?.text) || '';
+      }
+      if (!reply) reply = 'Entschuldigung, ich konnte keine Antwort generieren.';
 
       addMessage(reply, 'bot');
     } catch (err) {
